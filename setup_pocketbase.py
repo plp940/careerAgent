@@ -58,7 +58,7 @@ def main():
         {
             "name": "interview_sessions",
             "type": "base",
-            "schema": [
+            "fields": [
                 {"name": "session_id", "type": "text", "required": True},
                 {"name": "job_title", "type": "text", "required": False},
                 {"name": "company", "type": "text", "required": False},
@@ -74,7 +74,7 @@ def main():
         {
             "name": "interview_turns",
             "type": "base",
-            "schema": [
+            "fields": [
                 {"name": "session_id", "type": "text", "required": True},
                 {"name": "phase", "type": "number", "required": True},
                 {"name": "depth", "type": "number", "required": False},
@@ -89,7 +89,7 @@ def main():
         {
             "name": "interview_evaluations",
             "type": "base",
-            "schema": [
+            "fields": [
                 {"name": "session_id", "type": "text", "required": True},
                 {"name": "overall_score", "type": "number", "required": False},
                 {"name": "phase_scores", "type": "json", "required": False},
@@ -104,7 +104,7 @@ def main():
         {
             "name": "job_applications",
             "type": "base",
-            "schema": [
+            "fields": [
                 {"name": "job_title", "type": "text", "required": True},
                 {"name": "agency", "type": "text", "required": True},
                 {"name": "source", "type": "text", "required": False},
