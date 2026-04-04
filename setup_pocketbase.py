@@ -29,7 +29,10 @@ def get_token():
     r = requests.post(
         f"{PB_URL}/api/admins/auth-with-password",
         json={"identity": PB_EMAIL, "password": PB_PASSWORD},
+        headers={"Content-Type": "application/json"},
     )
+    print("STATUS:", r.status_code)
+    print("RESPONSE:", r.text)  # 🔥 DEBUG LINE
     r.raise_for_status()
     return r.json()["token"]
 
