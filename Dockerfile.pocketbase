@@ -7,7 +7,7 @@ RUN apk add --no-cache wget unzip && \
     unzip pocketbase_${PB_VERSION}_linux_amd64.zip -d /pb && \
     rm pocketbase_${PB_VERSION}_linux_amd64.zip
 
-COPY pb_migrations /pb/pb_migrations
+#COPY pb_migrations /pb/pb_migrations
 EXPOSE 8090
 
 # Persistent data lives in /pb/pb_data (mounted as Render disk)
