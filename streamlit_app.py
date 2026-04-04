@@ -691,7 +691,7 @@ elif page == "🎤 Interview Practice":
             # Build interview URL with prefill data
             import requests as req
 
-            response = req.post("http://localhost:8000/prefill_session", data={
+            response = req.post("https://job-agent-api-w42b.onrender.com/prefill_session", data={
                 "job_title": interview_job_title,
                 "company": interview_company,
                 "resume_text": interview_resume,
