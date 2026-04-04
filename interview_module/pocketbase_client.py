@@ -15,7 +15,9 @@ _root = pathlib.Path(__file__).parent.parent
 load_dotenv(_root / ".env")
 load_dotenv(_root / "utils" / ".env")
 
-POCKETBASE_URL = os.getenv("POCKETBASE_URL", "http://localhost:8090")
+POCKETBASE_URL = os.getenv(
+    "POCKETBASE_URL", "https://multi-agent-job-hunt-assistant.onrender.com"
+)
 POCKETBASE_EMAIL = os.getenv("POCKETBASE_EMAIL", "")
 POCKETBASE_PASSWORD = os.getenv("POCKETBASE_PASSWORD", "")
 
