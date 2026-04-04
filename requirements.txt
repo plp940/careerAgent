@@ -1,25 +1,25 @@
 # Core dependencies
-streamlit
-pandas
-requests
-python-dotenv
-crewai
-litellm
-python-docx
+streamlit==1.55.0
+pandas==2.3.3
+requests==2.32.5
+python-dotenv==1.1.1
+crewai==1.11.0
+litellm==1.82.4
+python-docx==1.2.0
 
 # Interview Practice Agent dependencies
-fastapi
-uvicorn[standard]
-pymupdf
-websockets
+fastapi==0.135.2
+uvicorn==0.42.0
+PyMuPDF==1.26.7
+websockets==16.0
 #supabase-py
-python-multipart
+python-multipart==0.0.22
 
 # Audio processing (if needed for local processing)
 # numpy
 # scipy
 
-# Development
-pytest
-black
-flake8
+# PocketBase client needs these
+httpx==0.28.1
+pydantic==2.11.10
+

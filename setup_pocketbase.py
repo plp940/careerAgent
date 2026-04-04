@@ -9,7 +9,6 @@ Prerequisites:
 """
 
 import requests
-import json
 import os
 import pathlib
 from dotenv import load_dotenv
@@ -18,38 +17,52 @@ _root = pathlib.Path(__file__).parent
 load_dotenv(_root / ".env")
 load_dotenv(_root / "utils" / ".env")
 
-PB_URL = os.getenv(
-    "POCKETBASE_URL", "https://multi-agent-job-hunt-assistant.onrender.com"
-)
+PB_URL = os.getenv("POCKETBASE_URL", "http://localhost:8090")
 PB_EMAIL = os.getenv("POCKETBASE_EMAIL")
 PB_PASSWORD = os.getenv("POCKETBASE_PASSWORD")
+
+# ── Debug: confirm what's loaded ──────────────────────────────────────────────
+print(f"PB_URL   = {PB_URL}")
+print(f"PB_EMAIL = {PB_EMAIL}")
 
 
 def get_token():
     r = requests.post(
-        f"{PB_URL}/api/admins/auth-with-password",
+        f"{PB_URL}/api/collections/_superusers/auth-with-password",
         json={"identity": PB_EMAIL, "password": PB_PASSWORD},
         headers={"Content-Type": "application/json"},
     )
-    print("STATUS:", r.status_code)
-    print("RESPONSE:", r.text)  # 🔥 DEBUG LINE
+    print(f"Auth status: {r.status_code}")
+    if not r.ok:
+        print(f"Auth error: {r.text}")
     r.raise_for_status()
     return r.json()["token"]
 
 
 def create_collection(token, schema):
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    # v0.23 fix: no "Bearer" prefix — pass raw token
+    headers = {"Authorization": token, "Content-Type": "application/json"}
     r = requests.post(f"{PB_URL}/api/collections", json=schema, headers=headers)
-    if r.status_code == 400 and "already exists" in r.text:
-        print(f"  Collection '{schema['name']}' already exists — skipping")
-        return True
-    r.raise_for_status()
-    print(f"  ✅ Created collection: {schema['name']}")
+
+    if r.status_code == 400:
+        print(f"  400 response for '{schema['name']}': {r.text}")
+        if "already exists" in r.text:
+            print(f"  Collection '{schema['name']}' already exists — skipping")
+            return True
+        r.raise_for_status()
+
+    elif not r.ok:
+        print(f"  ERROR {r.status_code} for '{schema['name']}': {r.text}")
+        r.raise_for_status()
+
+    else:
+        print(f"  ✅ Created collection: {schema['name']}")
+
     return True
 
 
 def main():
-    print("Connecting to PocketBase...")
+    print("\nConnecting to PocketBase...")
     token = get_token()
     print("✅ Authenticated\n")
     print("Creating collections...")
@@ -100,7 +113,6 @@ def main():
                 {"name": "report_json", "type": "json", "required": False},
             ],
         },
-        # ── Job Applications (migrated from CSV) ──────────────────────────────
         {
             "name": "job_applications",
             "type": "base",

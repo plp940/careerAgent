@@ -1,17 +1,27 @@
-FROM alpine:latest
-WORKDIR /pb
-# Download PocketBase
-ARG PB_VERSION=0.22.4
-RUN apk add --no-cache wget unzip && \
-    wget https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip && \
-    unzip pocketbase_${PB_VERSION}_linux_amd64.zip -d /pb && \
-    rm pocketbase_${PB_VERSION}_linux_amd64.zip
+# Dockerfile.pocketbase
+# Deploys PocketBase to Fly.io with persistent volume
 
-#COPY pb_migrations /pb/pb_migrations
+FROM alpine:3.19
+
+# Install dependencies
+RUN apk add --no-cache \
+    ca-certificates \
+    wget \
+    unzip
+
+# Download PocketBase binary
+ARG PB_VERSION=0.22.4
+RUN wget -q https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip \
+    && unzip pocketbase_${PB_VERSION}_linux_amd64.zip \
+    && mv pocketbase /pb/pocketbase \
+    && rm pocketbase_${PB_VERSION}_linux_amd64.zip
+
+# /pb/pb_data is where Fly.io will mount the persistent volume
+# Never store data anywhere else
+VOLUME /pb/pb_data
+
 EXPOSE 8090
 
-# Persistent data lives in /pb/pb_data (mounted as Render disk)
+# --dir      = where PocketBase stores its SQLite database
+# --publicDir = optional static files (not needed here)
 CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data"]
-
-
-

@@ -1,0 +1,41 @@
+# fly.toml
+# Configuration for deploying PocketBase to Fly.io
+# Place this at the ROOT of your project alongside Dockerfile.pocketbase
+#
+# Deploy steps:
+#   1. fly launch --no-deploy        (first time only — creates the app)
+#   2. fly volumes create pb_data --size 1   (creates 1GB persistent disk)
+#   3. fly deploy --dockerfile Dockerfile.pocketbase
+#   4. fly open   (opens your app URL)
+#   5. Visit https://<your-app>.fly.dev/_/ to set up admin account
+
+app = "job-agent-pocketbase"   # ← change this to your preferred app name
+                                #   must be globally unique on Fly.io
+primary_region = "sin"         # Singapore — closest free region to India
+                                # Other options: bom (Mumbai, paid), sin, lax, cdg
+
+[build]
+  dockerfile = "Dockerfile.pocketbase"
+
+[http_service]
+  internal_port = 8090
+  force_https = true
+  auto_stop_machines = false    # Keep always-on (important for PocketBase)
+  auto_start_machines = true
+  min_machines_running = 1      # Always keep 1 instance alive
+
+[[vm]]
+  memory = "256mb"              # Minimum — fine for PocketBase
+  cpu_kind = "shared"
+  cpus = 1
+
+# Persistent volume — mounts to /pb/pb_data inside the container
+# This is where PocketBase stores its SQLite database
+# Without this, all data is lost on every restart
+[[mounts]]
+  source = "pb_data"            # Volume name (created via: fly volumes create pb_data --size 1)
+  destination = "/pb/pb_data"   # Must match --dir in Dockerfile CMD
+
+[env]
+  # No secrets needed here — admin credentials are set via PocketBase UI on first launch
+  PB_ENCRYPTION_KEY = ""        # Optional: set via fly secrets set PB_ENCRYPTION_KEY=yourkey

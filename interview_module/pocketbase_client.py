@@ -41,7 +41,7 @@ def _get_token() -> Optional[str]:
         return None
     try:
         r = requests.post(
-            f"{POCKETBASE_URL}/api/admins/auth-with-password",
+            f"{POCKETBASE_URL}/api/collections/_superusers/auth-with-password",
             json={"identity": POCKETBASE_EMAIL, "password": POCKETBASE_PASSWORD},
             timeout=5,
         )
