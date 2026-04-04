@@ -1,0 +1,21 @@
+<<RESUME_SUMMARY>>
+As a passionate AI/ML professional, I am excited to leverage my skills in machine learning, deep learning, and natural language processing to drive impactful solutions. With experience in building and deploying AI models, including a CNN-based fruit freshness classifier and a hybrid search+RAG pipeline, I am confident in my ability to contribute to the development of production-grade generative AI solutions. I am eager to expand my expertise in MLOps, deployment, and management of machine learning models, and I am excited about the opportunity to work with a talented team to implement seamless engineering operations. My strong foundation in computer science, combined with my experience in leading teams and collaborating with cross-functional groups, makes me a strong fit for a lead role in machine learning engineering. I am committed to continuous learning and professional growth, with a focus on staying up-to-date with the latest advancements in AI and machine learning.
+
+<<COVER_LETTER>>
+Dear Hiring Manager,
+
+I am thrilled to apply for the Lead Machine Learning and MLOps Engineer position at S&P Global, where I can utilize my skills and experience to drive the development of production-grade generative AI solutions. With a strong background in machine learning, deep learning, and natural language processing, I am confident in my ability to lead engineering activities and implement machine learning engineering operations.
+
+As a passionate AI/ML professional, I have had the opportunity to work on various projects, including building and deploying AI models, such as a CNN-based fruit freshness classifier and a hybrid search+RAG pipeline. I have also had experience leading teams and collaborating with cross-functional groups, which has taught me the importance of effective communication, teamwork, and problem-solving. My experience in data science and machine learning has equipped me with a strong foundation in programming languages, including Python, C++, and JavaScript, as well as expertise in ML/DL frameworks, such as TensorFlow, PyTorch, and Hugging Face Transformers.
+
+I am particularly drawn to this role because of the opportunity to work on generative AI solutions and implement MLOps. I am excited about the prospect of working with a talented team to ensure the seamless deployment, monitoring, and management of machine learning models and data pipelines. I am also eager to learn and grow with the company, and I am committed to staying up-to-date with the latest advancements in AI and machine learning. Currently, I am actively learning about production-grade deployment and monitoring, as I believe these skills are essential for ensuring the success of machine learning models in a real-world setting.
+
+In addition to my technical skills and experience, I possess excellent communication and leadership skills, which have been demonstrated through my experience in leading teams and presenting results to senior staff. I am confident that my strong work ethic, combined with my passion for AI/ML, makes me a strong fit for this role.
+
+Thank you for considering my application. I am excited about the opportunity to discuss my qualifications further and learn more about the team's work.
+
+Sincerely,
+Lakshmiprasannapolipireddi
+
+<<OUTREACH_MESSAGE>>
+Hi, I came across the Lead Machine Learning and MLOps Engineer role at S&P Global and was impressed by the company's commitment to innovation and excellence in AI. With my background in machine learning and experience in building and deploying AI models, I believe I would be a strong fit for this position. I would love to learn more about the team's work and discuss how my skills and experience align with the company's goals. Please let me know if you would be open to a conversation.

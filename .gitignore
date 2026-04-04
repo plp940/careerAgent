@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+utils/.env
+
+# Data files (protect sensitive info)
+data/ats_resumes/*
+data/cover_letters/*
+
+# But allow sample files
+!data/ats_resumes/sample_*.txt
+!data/cover_letters/sample_*.txt
+
+# PocketBase local data
+pb_data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Virtual environment
+venv/
+.env/
+
+# Streamlit cache
+.streamlit/
+
+# VS Code
+.vscode/
+
+
+pocketbase.exe
+supabase_schema.sql

@@ -1,0 +1,28 @@
+services:
+  # ── FastAPI Interview Agent ──────────────────────────────────────────────────
+  - type: web
+    name: interview-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn interview_module.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false   # Set manually in Render dashboard
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: POCKETBASE_URL
+        sync: false   # Set to your PocketBase Render URL after deploying PB
+      - key: POCKETBASE_EMAIL
+        sync: false
+      - key: POCKETBASE_PASSWORD
+        sync: false
+
+  # ── PocketBase Database ──────────────────────────────────────────────────────
+  - type: web
+    name: pocketbase-db
+    runtime: docker
+    dockerfilePath: ./Dockerfile.pocketbase
+    disk:
+      name: pb-data
+      mountPath: /pb/pb_data
+      sizeGB: 1     # Free tier gives 1GB

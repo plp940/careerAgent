@@ -1,0 +1,25 @@
+# Core dependencies
+streamlit
+pandas
+requests
+python-dotenv
+crewai
+litellm
+python-docx
+
+# Interview Practice Agent dependencies
+fastapi
+uvicorn[standard]
+pymupdf
+websockets
+#supabase-py
+python-multipart
+
+# Audio processing (if needed for local processing)
+# numpy
+# scipy
+
+# Development
+pytest
+black
+flake8
