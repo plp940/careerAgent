@@ -24,8 +24,10 @@ PB_PASSWORD = os.getenv("POCKETBASE_PASSWORD")
 
 
 def get_token():
-    r = requests.post(f"{PB_URL}/api/admins/auth-with-password",
-                      json={"identity": PB_EMAIL, "password": PB_PASSWORD})
+    r = requests.post(
+        f"{PB_URL}/api/admins/auth-with-password",
+        json={"identity": PB_EMAIL, "password": PB_PASSWORD},
+    )
     r.raise_for_status()
     return r.json()["token"]
 
@@ -62,7 +64,7 @@ def main():
                 {"name": "current_phase", "type": "number", "required": False},
                 {"name": "current_depth", "type": "number", "required": False},
                 {"name": "status", "type": "text", "required": False},
-            ]
+            ],
         },
         {
             "name": "interview_turns",
@@ -77,7 +79,7 @@ def main():
                 {"name": "score_reason", "type": "text", "required": False},
                 {"name": "filler_words_count", "type": "number", "required": False},
                 {"name": "hint_given", "type": "bool", "required": False},
-            ]
+            ],
         },
         {
             "name": "interview_evaluations",
@@ -91,7 +93,21 @@ def main():
                 {"name": "improvement_tips", "type": "json", "required": False},
                 {"name": "overall_verdict", "type": "text", "required": False},
                 {"name": "report_json", "type": "json", "required": False},
-            ]
+            ],
+        },
+        # ── Job Applications (migrated from CSV) ──────────────────────────────
+        {
+            "name": "job_applications",
+            "type": "base",
+            "schema": [
+                {"name": "job_title", "type": "text", "required": True},
+                {"name": "agency", "type": "text", "required": True},
+                {"name": "source", "type": "text", "required": False},
+                {"name": "match_score", "type": "number", "required": False},
+                {"name": "resume_summary", "type": "text", "required": False},
+                {"name": "ats_resume_file", "type": "text", "required": False},
+                {"name": "date_applied", "type": "text", "required": False},
+            ],
         },
     ]
 
