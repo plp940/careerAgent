@@ -35,7 +35,7 @@ def get_token():
 
 
 def create_collection(token, schema):
-    headers = {"Authorization": token, "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     r = requests.post(f"{PB_URL}/api/collections", json=schema, headers=headers)
     if r.status_code == 400 and "already exists" in r.text:
         print(f"  Collection '{schema['name']}' already exists — skipping")

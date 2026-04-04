@@ -56,7 +56,10 @@ def _get_token() -> Optional[str]:
 def _headers() -> Dict:
     token = _get_token()
     if token:
-        return {"Authorization": token, "Content-Type": "application/json"}
+        return {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        }
     return {"Content-Type": "application/json"}
 
 
