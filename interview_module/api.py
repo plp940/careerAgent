@@ -101,9 +101,10 @@ async def prefill_session(
         "resume_text": resume_text,
         "jd_text": jd_text,
     }
+    base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
     return {
         "token": token,
-        "interview_url": f"http://localhost:8000/interview.html?token={token}",  # ← FIX 2: .html added
+        "interview_url": f"{base_url}/interview.html?token={token}",  # ← FIX 2: .html added
     }
 
 
