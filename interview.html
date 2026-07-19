@@ -920,7 +920,7 @@
         const API = params.get('api') || (
             window.location.origin === "null" || window.location.origin.includes("file://")
                 ? "http://localhost:8000"
-                : window.location.origin
+                : (window.location.origin.includes("github.io") ? "https://careeragent-fkn6.onrender.com" : window.location.origin)
         );
         let sessionId = null;
         let mediaRecorder = null;

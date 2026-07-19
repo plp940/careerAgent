@@ -101,10 +101,27 @@ async def prefill_session(
         "resume_text": resume_text,
         "jd_text": jd_text,
     }
-    base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
+    
+    # Auto-detect base URL (prioritize API_BASE_URL, then Render's automatic deployment URL, then localhost)
+    base_url = os.getenv("API_BASE_URL") or os.getenv("RENDER_EXTERNAL_URL") or "http://localhost:8000"
+    
+    # Auto-detect frontend URL (prioritize FRONTEND_URL, fallback to GitHub Pages for Render deploys, defaults to local base URL)
+    frontend_url = os.getenv("FRONTEND_URL")
+    if not frontend_url:
+        if "onrender.com" in base_url or "render" in base_url:
+            frontend_url = "https://plp940.github.io/careerAgent"
+        else:
+            frontend_url = base_url
+            
+    if frontend_url.endswith(".html"):
+        interview_url = f"{frontend_url}?token={token}&api={base_url}"
+    else:
+        sep = "" if frontend_url.endswith("/") else "/"
+        interview_url = f"{frontend_url}{sep}interview.html?token={token}&api={base_url}"
+
     return {
         "token": token,
-        "interview_url": f"{base_url}/interview.html?token={token}",  # ← FIX 2: .html added
+        "interview_url": interview_url,
     }
 
 
