@@ -28,20 +28,22 @@ def extract_between_markers(text, start, end=None):
         return "Not found"
 
 
-def _openrouter_llm(temperature=0.3):
-    """Build a fresh OpenRouter LLM object."""
+def _groq_llm(temperature=0.3):
+    """Build a fresh Groq LLM object."""
+    groq_key = os.getenv("GROQ_API_KEY")
+    model = os.getenv("LLM_MODEL", "groq/llama-3.3-70b-versatile")
     return LLM(
-        model="openrouter/meta-llama/llama-3.1-70b-instruct:free",
-        api_key=OPENROUTER_API_KEY,
+        model=model,
+        api_key=groq_key,
         temperature=temperature,
         timeout=LLM_TIMEOUT,
     )
 
 
-def _swap_crew_to_openrouter(crew):
+def _swap_crew_to_groq(crew):
     """
-    Rebuild crew with every agent's LLM swapped to OpenRouter.
-    Called at runtime when Groq daily limit is hit.
+    Rebuild crew with every agent's LLM swapped to Groq.
+    Called at runtime when OpenRouter daily limit is hit.
     """
     for agent in crew.agents:
         temp = 0.3
@@ -49,7 +51,7 @@ def _swap_crew_to_openrouter(crew):
             temp = float(agent.llm.temperature) if agent.llm.temperature else 0.3
         except Exception:
             pass
-        agent.llm = _openrouter_llm(temperature=temp)
+        agent.llm = _groq_llm(temperature=temp)
 
     return Crew(
         agents=crew.agents,
@@ -68,16 +70,18 @@ def run_with_retry(crew, max_retries=2, wait_seconds=15):
             print(f"[DEBUG] Exception type: {type(e).__name__}")
             print(f"[DEBUG] Error string: {err[:300]}")
             print(f"[DEBUG] 'rate_limit' in err: {'rate_limit' in err}")
-            print(f"[DEBUG] OPENROUTER_API_KEY set: {bool(OPENROUTER_API_KEY)}")
+            
+            groq_key = os.getenv("GROQ_API_KEY")
+            print(f"[DEBUG] GROQ_API_KEY set: {bool(groq_key)}")
 
             if "rate_limit" in err or "ratelimit" in err:
-                if OPENROUTER_API_KEY:
-                    print("[Fallback] Switching to OpenRouter...")
-                    crew = _swap_crew_to_openrouter(crew)
+                if groq_key:
+                    print("[Fallback] Switching to Groq...")
+                    crew = _swap_crew_to_groq(crew)
                     return crew.kickoff()
                 else:
                     raise RuntimeError(
-                        "Rate limit hit, no OPENROUTER_API_KEY set"
+                        "Rate limit hit, no GROQ_API_KEY set"
                     ) from e
             else:
                 raise

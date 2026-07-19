@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Interview Practice</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             padding: 20px;
         }
+
         .container {
             background: #1e1e2e;
             border-radius: 16px;
@@ -24,433 +31,1002 @@
             border: 1px solid #333;
             color: #e0e0e0;
         }
-        h1 { text-align: center; color: #a78bfa; margin: 20px 0 5px; font-size: 1.6em; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
+
+        h1 {
+            text-align: center;
+            color: #a78bfa;
+            margin: 20px 0 5px;
+            font-size: 1.6em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
 
         /* Setup */
-        .setup-section { padding: 30px; }
-        .input-group { margin-bottom: 18px; }
-        .input-group label { display: block; margin-bottom: 6px; color: #bbb; font-size: 13px; font-weight: 500; }
-        .input-group input, .input-group textarea {
-            width: 100%; padding: 10px 14px;
-            background: #2a2a3e; border: 1px solid #444; border-radius: 8px;
-            color: #e0e0e0; font-size: 14px; transition: border-color 0.2s;
+        .setup-section {
+            padding: 30px;
         }
-        .input-group input:focus, .input-group textarea:focus {
-            outline: none; border-color: #a78bfa;
+
+        .input-group {
+            margin-bottom: 18px;
         }
-        .input-group textarea { min-height: 110px; resize: vertical; }
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #bbb;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: #2a2a3e;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #a78bfa;
+        }
+
+        .input-group textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
         .prefill-notice {
-            background: #1a3a2a; border: 1px solid #2d6a4f;
-            border-radius: 8px; padding: 10px 14px;
-            color: #95d5b2; font-size: 13px; margin-bottom: 15px; display: none;
+            background: #1a3a2a;
+            border: 1px solid #2d6a4f;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #95d5b2;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
         }
-        .prefill-notice.show { display: block; }
+
+        .prefill-notice.show {
+            display: block;
+        }
 
         /* Interview header */
-        .interview-section { display: none; flex: 1; flex-direction: column; }
+        .interview-section {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
         .interview-header {
             background: linear-gradient(135deg, #4c1d95, #1e40af);
-            color: white; padding: 16px 20px; border-radius: 16px 16px 0 0;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 16px 16px 0 0;
         }
-        .interview-header h2 { margin: 0; font-size: 1.1em; }
-        .interview-header .company { opacity: 0.85; font-size: 0.85em; margin-top: 2px; }
+
+        .interview-header h2 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .interview-header .company {
+            opacity: 0.85;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+
         .phase-indicator {
-            display: flex; justify-content: space-between;
-            margin: 12px 0 0; background: rgba(255,255,255,0.1);
-            border-radius: 8px; padding: 6px;
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px;
         }
+
         .phase-step {
-            flex: 1; text-align: center; padding: 5px 3px;
-            border-radius: 4px; font-size: 10px; color: rgba(255,255,255,0.6);
+            flex: 1;
+            text-align: center;
+            padding: 5px 3px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
         }
-        .phase-step.active { background: rgba(255,255,255,0.25); color: white; font-weight: 600; }
-        .phase-step.completed { background: rgba(76,175,80,0.7); color: white; }
+
+        .phase-step.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-weight: 600;
+        }
+
+        .phase-step.completed {
+            background: rgba(76, 175, 80, 0.7);
+            color: white;
+        }
 
         /* Chat */
         .chat-container {
-            flex: 1; overflow-y: auto; padding: 16px;
-            background: #141420; display: flex; flex-direction: column;
-            gap: 12px; max-height: 55vh;
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #141420;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 55vh;
         }
-        .chat-message { display: flex; gap: 10px; max-width: 88%; animation: fadeIn 0.25s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .chat-message.user { align-self: flex-end; flex-direction: row-reverse; }
-        .chat-message.ai { align-self: flex-start; }
+
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            max-width: 88%;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.ai {
+            align-self: flex-start;
+        }
+
         .avatar {
-            width: 34px; height: 34px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
         }
-        .chat-message.user .avatar { background: #4c1d95; }
-        .chat-message.ai .avatar { background: linear-gradient(135deg, #4c1d95, #1e40af); }
+
+        .chat-message.user .avatar {
+            background: #4c1d95;
+        }
+
+        .chat-message.ai .avatar {
+            background: linear-gradient(135deg, #4c1d95, #1e40af);
+        }
+
         .message-content {
-            padding: 10px 14px; border-radius: 14px; line-height: 1.5;
-            font-size: 14px; word-wrap: break-word;
+            padding: 10px 14px;
+            border-radius: 14px;
+            line-height: 1.5;
+            font-size: 14px;
+            word-wrap: break-word;
         }
+
         .chat-message.user .message-content {
-            background: #4c1d95; color: white; border-bottom-right-radius: 4px;
+            background: #4c1d95;
+            color: white;
+            border-bottom-right-radius: 4px;
         }
+
         .chat-message.ai .message-content {
-            background: #2a2a3e; color: #e0e0e0; border-bottom-left-radius: 4px;
+            background: #2a2a3e;
+            color: #e0e0e0;
+            border-bottom-left-radius: 4px;
         }
-        .message-meta { font-size: 10px; color: #666; margin-top: 3px; padding: 0 3px; }
-        .chat-message.user .message-meta { text-align: right; }
+
+        .message-meta {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
+            padding: 0 3px;
+        }
+
+        .chat-message.user .message-meta {
+            text-align: right;
+        }
+
         .score-badge {
-            display: inline-block; font-size: 10px; padding: 2px 7px;
-            border-radius: 10px; margin-left: 6px; font-weight: 600;
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 600;
         }
-        .score-high { background: #1a3a2a; color: #95d5b2; }
-        .score-mid { background: #3a2a00; color: #ffd666; }
-        .score-low { background: #3a1a1a; color: #ff8080; }
+
+        .score-high {
+            background: #1a3a2a;
+            color: #95d5b2;
+        }
+
+        .score-mid {
+            background: #3a2a00;
+            color: #ffd666;
+        }
+
+        .score-low {
+            background: #3a1a1a;
+            color: #ff8080;
+        }
 
         /* Typing */
         .typing-indicator {
-            display: none; align-self: flex-start; background: #2a2a3e;
-            padding: 12px 16px; border-radius: 14px; border-bottom-left-radius: 4px;
+            display: none;
+            align-self: flex-start;
+            background: #2a2a3e;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
         }
-        .typing-indicator.show { display: flex; gap: 4px; }
-        .typing-dot { width: 7px; height: 7px; background: #a78bfa; border-radius: 50%; animation: typing 1.3s infinite; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+
+        .typing-indicator.show {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            background: #a78bfa;
+            border-radius: 50%;
+            animation: typing 1.3s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-8px);
+            }
+        }
 
         /* Input area */
-        .input-area { background: #1e1e2e; padding: 16px; border-top: 1px solid #333; border-radius: 0 0 16px 16px; }
+        .input-area {
+            background: #1e1e2e;
+            padding: 16px;
+            border-top: 1px solid #333;
+            border-radius: 0 0 16px 16px;
+        }
+
         .status-bar {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 10px; padding: 6px 10px;
-            background: #1a2a1a; border-radius: 6px; font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 6px 10px;
+            background: #1a2a1a;
+            border-radius: 6px;
+            font-size: 12px;
         }
-        .status-left { display: flex; align-items: center; gap: 6px; color: #95d5b2; }
-        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .recording-status { text-align: center; padding: 6px; font-size: 12px; color: #ff6b6b; display: none; }
-        .recording-status.show { display: block; }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #95d5b2;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .recording-status {
+            text-align: center;
+            padding: 6px;
+            font-size: 12px;
+            color: #ff6b6b;
+            display: none;
+        }
+
+        .recording-status.show {
+            display: block;
+        }
+
         .input-wrapper {
-            display: flex; gap: 8px; align-items: flex-end;
-            background: #2a2a3e; padding: 8px 10px;
-            border-radius: 20px; border: 1px solid #444; transition: border-color 0.2s;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            background: #2a2a3e;
+            padding: 8px 10px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            transition: border-color 0.2s;
         }
-        .input-wrapper:focus-within { border-color: #a78bfa; }
+
+        .input-wrapper:focus-within {
+            border-color: #a78bfa;
+        }
+
         .chat-input {
-            flex: 1; border: none; background: transparent;
-            padding: 6px 12px; font-size: 14px; resize: none;
-            max-height: 90px; min-height: 36px; outline: none; color: #e0e0e0;
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 6px 12px;
+            font-size: 14px;
+            resize: none;
+            max-height: 90px;
+            min-height: 36px;
+            outline: none;
+            color: #e0e0e0;
         }
-        .input-actions { display: flex; gap: 6px; padding-right: 4px; }
+
+        .input-actions {
+            display: flex;
+            gap: 6px;
+            padding-right: 4px;
+        }
+
         .icon-btn {
-            width: 38px; height: 38px; border-radius: 50%; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.25s; font-size: 17px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+            font-size: 17px;
         }
-        .icon-btn:hover { transform: scale(1.08); }
-        .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-        .icon-btn.mic { background: #7c3aed; color: white; }
-        .icon-btn.mic.recording { background: #dc2626; animation: pulse 1.4s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); } 70% { box-shadow: 0 0 0 12px rgba(220,38,38,0); } 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); } }
-        .icon-btn.send { background: linear-gradient(135deg, #7c3aed, #1d4ed8); color: white; }
+
+        .icon-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .icon-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .icon-btn.mic {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .icon-btn.mic.recording {
+            background: #dc2626;
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(220, 38, 38, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+            }
+        }
+
+        .icon-btn.send {
+            background: linear-gradient(135deg, #7c3aed, #1d4ed8);
+            color: white;
+        }
 
         /* STT warning */
         .stt-warning {
-            background: #3a2000; border: 1px solid #7c4200;
-            border-radius: 8px; padding: 10px 14px;
-            color: #ffa040; font-size: 12px; margin-bottom: 10px; display: none;
+            background: #3a2000;
+            border: 1px solid #7c4200;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffa040;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
         }
-        .stt-warning.show { display: block; }
+
+        .stt-warning.show {
+            display: block;
+        }
 
         /* Break modal */
         .break-modal {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
-            z-index: 1000; justify-content: center; align-items: center;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
-        .break-modal.show { display: flex; }
+
+        .break-modal.show {
+            display: flex;
+        }
+
         .break-content {
-            background: #1e1e2e; border: 1px solid #555;
-            padding: 36px; border-radius: 16px; text-align: center; max-width: 440px;
+            background: #1e1e2e;
+            border: 1px solid #555;
+            padding: 36px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 440px;
         }
-        .break-content h2 { color: #a78bfa; margin-bottom: 12px; }
-        .break-content p { color: #aaa; margin-bottom: 24px; }
+
+        .break-content h2 {
+            color: #a78bfa;
+            margin-bottom: 12px;
+        }
+
+        .break-content p {
+            color: #aaa;
+            margin-bottom: 24px;
+        }
 
         /* Report */
-        .report-section { display: none; padding: 30px; overflow-y: auto; }
-        .report-section h1 { color: #a78bfa; margin-bottom: 20px; }
+        .report-section {
+            display: none;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .report-section h1 {
+            color: #a78bfa;
+            margin-bottom: 20px;
+        }
+
         .score-card {
             background: linear-gradient(135deg, #4c1d95, #1e40af);
-            color: white; padding: 24px; border-radius: 12px; text-align: center; margin-bottom: 24px;
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 24px;
         }
-        .score-number { font-size: 3.5em; font-weight: bold; }
-        .score-label { font-size: 1em; opacity: 0.9; }
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+
+        .score-number {
+            font-size: 3.5em;
+            font-weight: bold;
+        }
+
+        .score-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
         .report-card {
-            background: #2a2a3e; border: 1px solid #444;
-            border-radius: 10px; padding: 16px;
+            background: #2a2a3e;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 16px;
         }
-        .report-card h3 { color: #a78bfa; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .report-card p { color: #ccc; font-size: 13px; line-height: 1.6; }
-        .phase-scores-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .phase-score-card { background: #2a2a3e; border: 1px solid #444; border-radius: 10px; padding: 14px; text-align: center; }
-        .phase-score-value { font-size: 1.8em; font-weight: bold; color: #a78bfa; }
-        .phase-score-name { font-size: 11px; color: #888; margin-top: 4px; }
-        .list-section { background: #2a2a3e; border: 1px solid #444; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-        .list-section h3 { color: #a78bfa; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; }
-        .list-section ul { margin-left: 16px; }
-        .list-section li { color: #ccc; font-size: 13px; margin: 7px 0; line-height: 1.5; }
-        .verdict-card { background: #1a2a3a; border: 1px solid #2a5a7a; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
-        .verdict-card h3 { color: #7ec8e3; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; }
-        .verdict-card p { color: #ccc; font-size: 14px; line-height: 1.6; }
+
+        .report-card h3 {
+            color: #a78bfa;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .report-card p {
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .phase-scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .phase-score-card {
+            background: #2a2a3e;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .phase-score-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #a78bfa;
+        }
+
+        .phase-score-name {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .list-section {
+            background: #2a2a3e;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .list-section h3 {
+            color: #a78bfa;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .list-section ul {
+            margin-left: 16px;
+        }
+
+        .list-section li {
+            color: #ccc;
+            font-size: 13px;
+            margin: 7px 0;
+            line-height: 1.5;
+        }
+
+        .verdict-card {
+            background: #1a2a3a;
+            border: 1px solid #2a5a7a;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .verdict-card h3 {
+            color: #7ec8e3;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .verdict-card p {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
         .depth-badge {
-            display: inline-block; background: #1a3a2a; color: #95d5b2;
-            padding: 3px 10px; border-radius: 10px; font-size: 12px; margin: 3px;
+            display: inline-block;
+            background: #1a3a2a;
+            color: #95d5b2;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin: 3px;
+        }
+
+        /* Live Analytics Panel */
+        .analytics-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #191924;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+        }
+
+        .analytics-card {
+            background: #232334;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid rgba(167, 139, 250, 0.15);
+        }
+
+        .analytics-title {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .analytics-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .analytics-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .badge-green {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .badge-yellow {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .badge-red {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
         }
 
         /* Buttons */
-        .btn { padding: 11px 22px; border: none; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s; }
-        .btn-primary { background: linear-gradient(135deg, #7c3aed, #1d4ed8); color: white; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(124,58,237,0.4); }
-        .btn-large { padding: 14px 36px; font-size: 16px; width: 100%; margin-top: 5px; }
-        .btn-secondary { background: #2a2a3e; color: #a78bfa; border: 1px solid #555; }
+        .btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
 
-        .error-message { background: #3a1a1a; color: #ff8080; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; border: 1px solid #7a2a2a; }
-        .error-message.show { display: block; }
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #1d4ed8);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-large {
+            padding: 14px 36px;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-secondary {
+            background: #2a2a3e;
+            color: #a78bfa;
+            border: 1px solid #555;
+        }
+
+        .error-message {
+            background: #3a1a1a;
+            color: #ff8080;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            border: 1px solid #7a2a2a;
+        }
+
+        .error-message.show {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
+    <div class="container">
 
-    <!-- Setup -->
-    <div class="setup-section" id="setupSection">
-        <h1>🎤 AI Interview Practice</h1>
-        <p class="subtitle">Real-time AI interview with Socratic drilling & evaluation</p>
+        <!-- Setup -->
+        <div class="setup-section" id="setupSection">
+            <h1>🎤 AI Interview Practice</h1>
+            <p class="subtitle">Real-time AI interview with Socratic drilling & evaluation</p>
 
-        <div class="prefill-notice" id="prefillNotice">
-            ✅ Session data loaded from Job Hunt Assistant. Review and click Start Interview.
-        </div>
-        <div class="error-message" id="errorMessage"></div>
+            <div class="prefill-notice" id="prefillNotice">
+                ✅ Session data loaded from Job Hunt Assistant. Review and click Start Interview.
+            </div>
+            <div class="error-message" id="errorMessage"></div>
 
-        <div class="row-2">
+            <div class="row-2">
+                <div class="input-group">
+                    <label>Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="e.g., Machine Learning Engineer">
+                </div>
+                <div class="input-group">
+                    <label>Company</label>
+                    <input type="text" id="company" placeholder="e.g., Google">
+                </div>
+            </div>
+
             <div class="input-group">
-                <label>Job Title</label>
-                <input type="text" id="jobTitle" placeholder="e.g., Machine Learning Engineer">
+                <label>Resume Text</label>
+                <textarea id="resumeInput" placeholder="Paste your resume here..."></textarea>
             </div>
+
             <div class="input-group">
-                <label>Company</label>
-                <input type="text" id="company" placeholder="e.g., Google">
+                <label>Job Description</label>
+                <textarea id="jdInput" placeholder="Paste the job description here..."></textarea>
             </div>
+
+            <button class="btn btn-primary btn-large" onclick="startInterview()">🎤 Start Interview</button>
         </div>
 
-        <div class="input-group">
-            <label>Resume Text</label>
-            <textarea id="resumeInput" placeholder="Paste your resume here..."></textarea>
-        </div>
-
-        <div class="input-group">
-            <label>Job Description</label>
-            <textarea id="jdInput" placeholder="Paste the job description here..."></textarea>
-        </div>
-
-        <button class="btn btn-primary btn-large" onclick="startInterview()">🎤 Start Interview</button>
-    </div>
-
-    <!-- Interview (chat) -->
-    <div class="interview-section" id="interviewSection">
-        <div class="interview-header">
-            <h2 id="sessionJobTitle">Position</h2>
-            <div class="company" id="sessionCompany">Company</div>
-            <div class="phase-indicator">
-                <div class="phase-step" data-phase="1">Background</div>
-                <div class="phase-step" data-phase="2">Project 1</div>
-                <div class="phase-step" data-phase="3">Project 2</div>
-                <div class="phase-step" data-phase="4">Domain</div>
-                <div class="phase-step" data-phase="5">Behavioral</div>
+        <!-- Interview (chat) -->
+        <div class="interview-section" id="interviewSection">
+            <div class="interview-header">
+                <h2 id="sessionJobTitle">Position</h2>
+                <div class="company" id="sessionCompany">Company</div>
+                <div class="phase-indicator">
+                    <div class="phase-step" data-phase="1">Background</div>
+                    <div class="phase-step" data-phase="2">Project 1</div>
+                    <div class="phase-step" data-phase="3">Project 2</div>
+                    <div class="phase-step" data-phase="4">Domain</div>
+                    <div class="phase-step" data-phase="5">Behavioral</div>
+                </div>
             </div>
-        </div>
 
-        <div class="chat-container" id="chatContainer">
-            <div class="typing-indicator" id="typingIndicator">
-                <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            <!-- Dynamic Live Analytics Dashboard -->
+            <div class="analytics-panel">
+                <div class="analytics-card">
+                    <div class="analytics-title">Anxiety Gauge</div>
+                    <div class="analytics-value" id="anxietyMetric"><span
+                            class="analytics-badge badge-green">Calm</span></div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-title">Vocal Pace (Fillers)</div>
+                    <div class="analytics-value" id="fillerMetric">0</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-title">Last Match Score</div>
+                    <div class="analytics-value" id="scoreMetric">--</div>
+                </div>
             </div>
-        </div>
 
-        <div class="input-area">
-            <div class="status-bar">
-                <div class="status-left"><div class="status-dot"></div><span id="phaseLabel">Phase 1: Background</span></div>
-                <button class="icon-btn" onclick="endInterview()" title="End Interview" style="width:30px;height:30px;font-size:13px;background:#dc2626;">✕</button>
+            <div class="chat-container" id="chatContainer">
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
             </div>
-            <div class="stt-warning" id="sttWarning">
-                ⚠️ Voice recording may not work in Brave with shields on. 
-                Go to <b>brave://settings/content/microphone</b> → Allow localhost, OR type your answers below.
-            </div>
-            <div class="recording-status" id="recordingStatus">🔴 Recording... Click mic to stop</div>
-            <div class="input-wrapper">
-                <textarea id="messageInput" class="chat-input" placeholder="Type your answer or use mic..." rows="1" onkeydown="handleKeyDown(event)"></textarea>
-                <div class="input-actions">
-                    <button class="icon-btn mic" id="micBtn" onclick="toggleRecording()" title="Record voice">🎤</button>
-                    <button class="icon-btn send" id="sendBtn" onclick="sendMessage()" title="Send">➤</button>
+
+            <div class="input-area">
+                <div class="status-bar">
+                    <div class="status-left">
+                        <div class="status-dot"></div><span id="phaseLabel">Phase 1: Background</span>
+                    </div>
+                    <button class="icon-btn" onclick="endInterview()" title="End Interview"
+                        style="width:30px;height:30px;font-size:13px;background:#dc2626;">✕</button>
+                </div>
+                <div class="stt-warning" id="sttWarning">
+                    ⚠️ Voice recording may not work in Brave with shields on.
+                    Go to <b>brave://settings/content/microphone</b> → Allow localhost, OR type your answers below.
+                </div>
+                <div class="recording-status" id="recordingStatus">🔴 Recording... Click mic to stop</div>
+                <div class="input-wrapper">
+                    <textarea id="messageInput" class="chat-input" placeholder="Type your answer or use mic..." rows="1"
+                        onkeydown="handleKeyDown(event)"></textarea>
+                    <div class="input-actions">
+                        <button class="icon-btn mic" id="micBtn" onclick="toggleRecording()"
+                            title="Record voice">🎤</button>
+                        <button class="icon-btn send" id="sendBtn" onclick="sendMessage()" title="Send">➤</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Report -->
-    <div class="report-section" id="reportSection">
-        <h1>📊 Interview Evaluation Report</h1>
+        <!-- Report -->
+        <div class="report-section" id="reportSection">
+            <h1>📊 Interview Evaluation Report</h1>
 
-        <div class="score-card">
-            <div class="score-number" id="overallScore">--</div>
-            <div class="score-label">Overall Score / 10</div>
-            <div style="margin-top:10px;font-size:13px;opacity:0.85" id="verdictSummary"></div>
-        </div>
-
-        <div class="phase-scores-grid" id="phaseScores"></div>
-
-        <div class="report-grid" id="socraticSection"></div>
-
-        <div id="phaseAnalysis"></div>
-
-        <div class="report-grid">
-            <div class="list-section">
-                <h3>💪 Strengths</h3>
-                <ul id="strengthsList"></ul>
+            <div class="score-card">
+                <div class="score-number" id="overallScore">--</div>
+                <div class="score-label">Overall Score / 10</div>
+                <div style="margin-top:10px;font-size:13px;opacity:0.85" id="verdictSummary"></div>
             </div>
+
+            <div class="phase-scores-grid" id="phaseScores"></div>
+
+            <div class="report-grid" id="socraticSection"></div>
+
+            <div id="phaseAnalysis"></div>
+
+            <div class="report-grid">
+                <div class="list-section">
+                    <h3>💪 Strengths</h3>
+                    <ul id="strengthsList"></ul>
+                </div>
+                <div class="list-section">
+                    <h3>🔧 Gaps</h3>
+                    <ul id="gapsList"></ul>
+                </div>
+            </div>
+
             <div class="list-section">
-                <h3>🔧 Gaps</h3>
-                <ul id="gapsList"></ul>
+                <h3>💡 Improvement Tips</h3>
+                <ul id="improvementTips"></ul>
+            </div>
+
+            <div class="verdict-card">
+                <h3>🎯 Overall Verdict</h3>
+                <p id="overallVerdict">--</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="location.reload()">🔄 Start New Interview</button>
+        </div>
+
+        <!-- Break modal -->
+        <div class="break-modal" id="breakModal">
+            <div class="break-content">
+                <h2>🌿 Take a Moment</h2>
+                <p>Let's pause here. Relax, take a deep breath. Continue when you're ready.</p>
+                <button class="btn btn-primary" onclick="resumeInterview()">I'm Ready to Continue</button>
             </div>
         </div>
-
-        <div class="list-section">
-            <h3>💡 Improvement Tips</h3>
-            <ul id="improvementTips"></ul>
-        </div>
-
-        <div class="verdict-card">
-            <h3>🎯 Overall Verdict</h3>
-            <p id="overallVerdict">--</p>
-        </div>
-
-        <button class="btn btn-primary" onclick="location.reload()">🔄 Start New Interview</button>
     </div>
 
-    <!-- Break modal -->
-    <div class="break-modal" id="breakModal">
-        <div class="break-content">
-            <h2>🌿 Take a Moment</h2>
-            <p>Let's pause here. Relax, take a deep breath. Continue when you're ready.</p>
-            <button class="btn btn-primary" onclick="resumeInterview()">I'm Ready to Continue</button>
-        </div>
-    </div>
-</div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const API = params.get('api') || (
+            window.location.origin === "null" || window.location.origin.includes("file://")
+                ? "http://localhost:8000"
+                : window.location.origin
+        );
+        let sessionId = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let isProcessing = false;
+        let lastAudioB64 = null;
+        let micSupported = true;
 
-<script>
-const API = 'https://job-agent-api-w42b.onrender.com';
-let sessionId = null;
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
-let isProcessing = false;
-let lastAudioB64 = null;
-let micSupported = true;
-
-// ── Auto-load from token (Streamlit handoff) ──────────────────────────────
-async function loadPrefill() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    if (!token) return;
-    try {
-        const res = await fetch(`${API}/prefill/${token}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.job_title) document.getElementById('jobTitle').value = data.job_title;
-        if (data.company) document.getElementById('company').value = data.company;
-        if (data.resume_text) document.getElementById('resumeInput').value = data.resume_text;
-        if (data.jd_text) document.getElementById('jdInput').value = data.jd_text;
-        document.getElementById('prefillNotice').classList.add('show');
-    } catch(e) {
-        console.warn('Prefill load failed:', e);
-    }
-}
-loadPrefill();
-
-// ── Check mic support ─────────────────────────────────────────────────────
-async function checkMicSupport() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        micSupported = false;
-        document.getElementById('sttWarning').classList.add('show');
-        return;
-    }
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach(t => t.stop());
-        micSupported = true;
-    } catch(e) {
-        micSupported = false;
-        document.getElementById('sttWarning').classList.add('show');
-    }
-}
-checkMicSupport();
-
-// ── Auto-resize textarea ──────────────────────────────────────────────────
-const msgInput = document.getElementById('messageInput');
-msgInput.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 90) + 'px';
-});
-function handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-// ── Start interview ───────────────────────────────────────────────────────
-async function startInterview() {
-    const jobTitle = document.getElementById('jobTitle').value.trim();
-    const company = document.getElementById('company').value.trim();
-    const resumeText = document.getElementById('resumeInput').value.trim();
-    const jdText = document.getElementById('jdInput').value.trim();
-
-    if (!jobTitle || !company || !resumeText || !jdText) {
-        showError('Please fill in all fields before starting.');
-        return;
-    }
-
-    try {
-        const fd = new FormData();
-        fd.append('job_title', jobTitle);
-        fd.append('company', company);
-        fd.append('resume_text', resumeText);
-        fd.append('jd_text', jdText);
-
-        const res = await fetch(`${API}/start_session`, { method: 'POST', body: fd });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.detail || 'Failed to start session');
+        // ── Auto-load from token (Streamlit handoff) ──────────────────────────────
+        async function loadPrefill() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            if (!token) return;
+            try {
+                const res = await fetch(`${API}/prefill/${token}`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.job_title) document.getElementById('jobTitle').value = data.job_title;
+                if (data.company) document.getElementById('company').value = data.company;
+                if (data.resume_text) document.getElementById('resumeInput').value = data.resume_text;
+                if (data.jd_text) document.getElementById('jdInput').value = data.jd_text;
+                document.getElementById('prefillNotice').classList.add('show');
+            } catch (e) {
+                console.warn('Prefill load failed:', e);
+            }
         }
-        const data = await res.json();
-        sessionId = data.session_id;
+        loadPrefill();
 
-        document.getElementById('setupSection').style.display = 'none';
-        document.getElementById('interviewSection').style.display = 'flex';
-        document.getElementById('sessionJobTitle').textContent = jobTitle;
-        document.getElementById('sessionCompany').textContent = company;
-        updatePhaseIndicator(data.phase);
-        addMessage('AI', data.question, true);
-        if (data.audio) playAudio(data.audio);
-        else speakText(data.question);
+        // ── Check mic support ─────────────────────────────────────────────────────
+        async function checkMicSupport() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                micSupported = false;
+                document.getElementById('sttWarning').classList.add('show');
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(t => t.stop());
+                micSupported = true;
+            } catch (e) {
+                micSupported = false;
+                document.getElementById('sttWarning').classList.add('show');
+            }
+        }
+        checkMicSupport();
 
-    } catch(e) {
-        showError('Error: ' + e.message);
-    }
-}
+        // ── Auto-resize textarea ──────────────────────────────────────────────────
+        const msgInput = document.getElementById('messageInput');
+        msgInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 90) + 'px';
+        });
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        }
 
-// ── Messaging ─────────────────────────────────────────────────────────────
-function addMessage(sender, text, showReplay = false, msgId = null) {
-    const chat = document.getElementById('chatContainer');
-    const div = document.createElement('div');
-    div.className = `chat-message ${sender.toLowerCase()}`;
-    if (msgId) div.id = msgId;
-    const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    div.innerHTML = `
+        // ── Start interview ───────────────────────────────────────────────────────
+        async function startInterview() {
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const resumeText = document.getElementById('resumeInput').value.trim();
+            const jdText = document.getElementById('jdInput').value.trim();
+
+            if (!jobTitle || !company || !resumeText || !jdText) {
+                showError('Please fill in all fields before starting.');
+                return;
+            }
+
+            try {
+                const fd = new FormData();
+                fd.append('job_title', jobTitle);
+                fd.append('company', company);
+                fd.append('resume_text', resumeText);
+                fd.append('jd_text', jdText);
+
+                const res = await fetch(`${API}/start_session`, { method: 'POST', body: fd });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Failed to start session');
+                }
+                const data = await res.json();
+                sessionId = data.session_id;
+
+                document.getElementById('setupSection').style.display = 'none';
+                document.getElementById('interviewSection').style.display = 'flex';
+                document.getElementById('sessionJobTitle').textContent = jobTitle;
+                document.getElementById('sessionCompany').textContent = company;
+                updatePhaseIndicator(data.phase);
+                addMessage('AI', data.question, true);
+                if (data.audio) playAudio(data.audio);
+                else speakText(data.question);
+
+            } catch (e) {
+                showError('Error: ' + e.message);
+            }
+        }
+
+        // ── Messaging ─────────────────────────────────────────────────────────────
+        function addMessage(sender, text, showReplay = false, msgId = null) {
+            const chat = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = `chat-message ${sender.toLowerCase()}`;
+            if (msgId) div.id = msgId;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            div.innerHTML = `
         <div class="avatar">${sender === 'AI' ? '🤖' : '👤'}</div>
         <div>
             <div class="message-content">${escapeHtml(text)}</div>
@@ -459,230 +1035,251 @@ function addMessage(sender, text, showReplay = false, msgId = null) {
                 ${showReplay ? '<span style="cursor:pointer;margin-left:6px" onclick="replayLast()">🔊</span>' : ''}
             </div>
         </div>`;
-    chat.insertBefore(div, document.getElementById('typingIndicator'));
-    chat.scrollTop = chat.scrollHeight;
-    document.getElementById('typingIndicator').classList.remove('show');
-}
-
-function updateMessage(id, newText) {
-    const el = document.getElementById(id);
-    if (el) el.querySelector('.message-content').textContent = newText;
-}
-
-function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-function showTyping() {
-    const ti = document.getElementById('typingIndicator');
-    ti.classList.add('show');
-    document.getElementById('chatContainer').scrollTop = 99999;
-}
-
-async function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const text = input.value.trim();
-    if (!text || isProcessing) return;
-    addMessage('You', text);
-    input.value = ''; input.style.height = 'auto';
-    await submitAnswer(text, null);
-}
-
-// ── Voice recording ───────────────────────────────────────────────────────
-async function toggleRecording() {
-    const btn = document.getElementById('micBtn');
-    const status = document.getElementById('recordingStatus');
-
-    if (!isRecording) {
-        if (!micSupported) {
-            showError('Microphone not available in this browser. Please type your answer.');
-            return;
+            chat.insertBefore(div, document.getElementById('typingIndicator'));
+            chat.scrollTop = chat.scrollHeight;
+            document.getElementById('typingIndicator').classList.remove('show');
         }
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
-            // Pick best supported MIME type
-            const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
-            let mimeType = 'audio/webm';
-            for (const mt of mimeTypes) {
-                if (MediaRecorder.isTypeSupported(mt)) { mimeType = mt; break; }
-            }
-            console.log('[Mic] Using MIME type:', mimeType);
+        function updateMessage(id, newText) {
+            const el = document.getElementById(id);
+            if (el) el.querySelector('.message-content').textContent = newText;
+        }
 
-            mediaRecorder = new MediaRecorder(stream, { mimeType });
-            audioChunks = [];
+        function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        function showTyping() {
+            const ti = document.getElementById('typingIndicator');
+            ti.classList.add('show');
+            document.getElementById('chatContainer').scrollTop = 99999;
+        }
 
-            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-            mediaRecorder.onstop = async () => {
-                const blob = new Blob(audioChunks, { type: mimeType });
-                console.log('[Mic] Audio blob size:', blob.size, 'bytes');
-                if (blob.size < 500) {
-                    showError('No audio captured. Make sure your microphone is working.');
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || isProcessing) return;
+            addMessage('You', text);
+            input.value = ''; input.style.height = 'auto';
+            await submitAnswer(text, null);
+        }
+
+        // ── Voice recording ───────────────────────────────────────────────────────
+        async function toggleRecording() {
+            const btn = document.getElementById('micBtn');
+            const status = document.getElementById('recordingStatus');
+
+            if (!isRecording) {
+                if (!micSupported) {
+                    showError('Microphone not available in this browser. Please type your answer.');
                     return;
                 }
-                const tempId = 'msg-' + Date.now();
-                addMessage('You', '🎤 Processing voice...', false, tempId);
-                await submitAnswer(null, blob, tempId);
-            };
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
-            mediaRecorder.start(250); // collect data every 250ms
-            isRecording = true;
-            btn.classList.add('recording');
-            status.classList.add('show');
+                    // Pick best supported MIME type
+                    const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+                    let mimeType = 'audio/webm';
+                    for (const mt of mimeTypes) {
+                        if (MediaRecorder.isTypeSupported(mt)) { mimeType = mt; break; }
+                    }
+                    console.log('[Mic] Using MIME type:', mimeType);
 
-        } catch(e) {
-            console.error('[Mic] Error:', e);
-            showError('Microphone access denied: ' + e.message + '. Please type your answer.');
-            document.getElementById('sttWarning').classList.add('show');
-        }
-    } else {
-        mediaRecorder.stop();
-        mediaRecorder.stream.getTracks().forEach(t => t.stop());
-        isRecording = false;
-        btn.classList.remove('recording');
-        status.classList.remove('show');
-    }
-}
+                    mediaRecorder = new MediaRecorder(stream, { mimeType });
+                    audioChunks = [];
 
-// ── Submit answer ─────────────────────────────────────────────────────────
-async function submitAnswer(transcript, audioBlob, tempMsgId = null) {
-    if (!sessionId || isProcessing) return;
-    isProcessing = true;
-    document.getElementById('sendBtn').disabled = true;
-    showTyping();
+                    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+                    mediaRecorder.onstop = async () => {
+                        const blob = new Blob(audioChunks, { type: mimeType });
+                        console.log('[Mic] Audio blob size:', blob.size, 'bytes');
+                        if (blob.size < 500) {
+                            showError('No audio captured. Make sure your microphone is working.');
+                            return;
+                        }
+                        const tempId = 'msg-' + Date.now();
+                        addMessage('You', '🎤 Processing voice...', false, tempId);
+                        await submitAnswer(null, blob, tempId);
+                    };
 
-    try {
-        const fd = new FormData();
-        fd.append('session_id', sessionId);
+                    mediaRecorder.start(250); // collect data every 250ms
+                    isRecording = true;
+                    btn.classList.add('recording');
+                    status.classList.add('show');
 
-        if (transcript) {
-            fd.append('transcript', transcript);
-        } else if (audioBlob) {
-            const ext = audioBlob.type.includes('ogg') ? '.ogg' : audioBlob.type.includes('mp4') ? '.mp4' : '.webm';
-            fd.append('audio', audioBlob, `answer${ext}`);
-        }
-
-        const res = await fetch(`${API}/submit_answer`, { method: 'POST', body: fd });
-        if (!res.ok) throw new Error('Failed to submit answer');
-        const data = await res.json();
-
-        // Break handling
-        if (data.is_break) {
-            document.getElementById('breakModal').classList.add('show');
-            return;
-        }
-
-        // Update user message with actual transcript
-        if (tempMsgId && data.answer_transcript && !data.answer_transcript.startsWith('[')) {
-            updateMessage(tempMsgId, data.answer_transcript);
-        } else if (tempMsgId && data.answer_transcript) {
-            updateMessage(tempMsgId, data.answer_transcript);
-        }
-
-        // Show score on previous message if exists
-        if (data.score && data.score_reason) {
-            const scoreClass = data.score >= 7 ? 'score-high' : data.score >= 5 ? 'score-mid' : 'score-low';
-            const badge = `<span class="score-badge ${scoreClass}">${data.score}/10</span>`;
-            const aiMessages = document.querySelectorAll('.chat-message.ai');
-            if (aiMessages.length > 0) {
-                const lastMeta = aiMessages[aiMessages.length-1].querySelector('.message-meta');
-                if (lastMeta && !lastMeta.querySelector('.score-badge')) {
-                    lastMeta.innerHTML += badge;
+                } catch (e) {
+                    console.error('[Mic] Error:', e);
+                    showError('Microphone access denied: ' + e.message + '. Please type your answer.');
+                    document.getElementById('sttWarning').classList.add('show');
                 }
+            } else {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                isRecording = false;
+                btn.classList.remove('recording');
+                status.classList.remove('show');
             }
         }
 
-        // AI response
-        addMessage('AI', data.question, true);
-        updatePhaseIndicator(data.phase);
-        updatePhaseLabel(data.phase, data.depth);
+        // ── Submit answer ─────────────────────────────────────────────────────────
+        async function submitAnswer(transcript, audioBlob, tempMsgId = null) {
+            if (!sessionId || isProcessing) return;
+            isProcessing = true;
+            document.getElementById('sendBtn').disabled = true;
+            showTyping();
 
-        if (data.audio) {
-            lastAudioB64 = data.audio;
-            playAudio(data.audio);
-        } else {
-            speakText(data.question);
-        }
+            try {
+                const fd = new FormData();
+                fd.append('session_id', sessionId);
 
-        if (data.status === 'completed') setTimeout(showReport, 2500);
+                if (transcript) {
+                    fd.append('transcript', transcript);
+                } else if (audioBlob) {
+                    const ext = audioBlob.type.includes('ogg') ? '.ogg' : audioBlob.type.includes('mp4') ? '.mp4' : '.webm';
+                    fd.append('audio', audioBlob, `answer${ext}`);
+                }
 
-    } catch(e) {
-        addMessage('AI', 'Error processing your answer. Please try again.');
-        console.error(e);
-    } finally {
-        isProcessing = false;
-        document.getElementById('sendBtn').disabled = false;
-    }
-}
+                const res = await fetch(`${API}/submit_answer`, { method: 'POST', body: fd });
+                if (!res.ok) throw new Error('Failed to submit answer');
+                const data = await res.json();
 
-// ── Phase UI ──────────────────────────────────────────────────────────────
-function updatePhaseIndicator(phase) {
-    const map = { BACKGROUND:1, PRIMARY_PROJECT_DRILL:2, SECONDARY_PROJECT_DRILL:3, DOMAIN_QUESTIONS:4, BEHAVIORAL:5, COMPLETED:6 };
-    const n = map[phase] || 1;
-    document.querySelectorAll('.phase-step').forEach(s => {
-        const p = parseInt(s.dataset.phase);
-        s.classList.remove('active','completed');
-        if (p === n) s.classList.add('active');
-        else if (p < n) s.classList.add('completed');
-    });
-}
-function updatePhaseLabel(phase, depth) {
-    const names = { BACKGROUND:'Background', PRIMARY_PROJECT_DRILL:`Primary Project (depth ${depth})`, SECONDARY_PROJECT_DRILL:`Secondary Project (depth ${depth})`, DOMAIN_QUESTIONS:'Domain Questions', BEHAVIORAL:'Behavioral', COMPLETED:'Completed' };
-    document.getElementById('phaseLabel').textContent = names[phase] || phase;
-}
+                // Update live analytics dashboard
+                if (data.anxiety_signals) {
+                    const fillerCount = data.anxiety_signals.filler_count || 0;
+                    const isAnxious = fillerCount >= 3 || data.anxiety_signals.fast_speaking || (data.anxiety_signals.pause_seconds && data.anxiety_signals.pause_seconds > 4);
+                    const gaugeEl = document.getElementById('anxietyMetric');
+                    const fillerEl = document.getElementById('fillerMetric');
 
-// ── Audio ─────────────────────────────────────────────────────────────────
-function playAudio(b64) {
-    try {
-        const bytes = atob(b64);
-        const arr = new Uint8Array(bytes.length);
-        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-        const blob = new Blob([arr], { type: 'audio/mpeg' });
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.play().catch(e => { console.warn('Autoplay blocked:', e); speakText(''); });
-    } catch(e) { console.error('Audio playback error:', e); }
-}
-function speakText(text) {
-    if ('speechSynthesis' in window && text) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.rate = 0.92; u.pitch = 1;
-        window.speechSynthesis.speak(u);
-    }
-}
-function replayLast() {
-    if (lastAudioB64) playAudio(lastAudioB64);
-    else {
-        const msgs = document.querySelectorAll('.chat-message.ai .message-content');
-        if (msgs.length) speakText(msgs[msgs.length-1].textContent);
-    }
-}
+                    if (isAnxious) {
+                        gaugeEl.innerHTML = `<span class="analytics-badge badge-red">Anxious</span>`;
+                    } else if (fillerCount > 0) {
+                        gaugeEl.innerHTML = `<span class="analytics-badge badge-yellow">Elevated</span>`;
+                    } else {
+                        gaugeEl.innerHTML = `<span class="analytics-badge badge-green">Calm</span>`;
+                    }
 
-// ── Report ────────────────────────────────────────────────────────────────
-async function showReport() {
-    document.getElementById('interviewSection').style.display = 'none';
-    document.getElementById('reportSection').style.display = 'block';
-    try {
-        const res = await fetch(`${API}/get_report/${sessionId}`);
-        if (!res.ok) throw new Error('Failed to get report');
-        const d = await res.json();
+                    fillerEl.textContent = `${fillerCount} fillers`;
+                }
+                if (data.score) {
+                    document.getElementById('scoreMetric').textContent = `${data.score}/10`;
+                }
 
-        document.getElementById('overallScore').textContent = d.overall_score || '--';
-        document.getElementById('verdictSummary').textContent = d.job_title + ' at ' + d.company;
-        document.getElementById('overallVerdict').textContent = d.overall_verdict || 'Report generated.';
+                // Break handling
+                if (data.is_break) {
+                    document.getElementById('breakModal').classList.add('show');
+                    return;
+                }
 
-        // Phase scores
-        const phaseScoresDiv = document.getElementById('phaseScores');
-        const nameMap = { BACKGROUND:'Background', PRIMARY_PROJECT_DRILL:'Primary Project', SECONDARY_PROJECT_DRILL:'Secondary Project', DOMAIN_QUESTIONS:'Domain', BEHAVIORAL:'Behavioral' };
-        for (const [phase, score] of Object.entries(d.phase_scores || {})) {
-            if (score) {
-                const card = document.createElement('div');
-                card.className = 'phase-score-card';
-                card.innerHTML = `<div class="phase-score-value">${score}</div><div class="phase-score-name">${nameMap[phase]||phase}</div>`;
-                phaseScoresDiv.appendChild(card);
+                // Update user message with actual transcript
+                if (tempMsgId && data.answer_transcript && !data.answer_transcript.startsWith('[')) {
+                    updateMessage(tempMsgId, data.answer_transcript);
+                } else if (tempMsgId && data.answer_transcript) {
+                    updateMessage(tempMsgId, data.answer_transcript);
+                }
+
+                // Show score on previous message if exists
+                if (data.score && data.score_reason) {
+                    const scoreClass = data.score >= 7 ? 'score-high' : data.score >= 5 ? 'score-mid' : 'score-low';
+                    const badge = `<span class="score-badge ${scoreClass}">${data.score}/10</span>`;
+                    const aiMessages = document.querySelectorAll('.chat-message.ai');
+                    if (aiMessages.length > 0) {
+                        const lastMeta = aiMessages[aiMessages.length - 1].querySelector('.message-meta');
+                        if (lastMeta && !lastMeta.querySelector('.score-badge')) {
+                            lastMeta.innerHTML += badge;
+                        }
+                    }
+                }
+
+                // AI response
+                addMessage('AI', data.question, true);
+                updatePhaseIndicator(data.phase);
+                updatePhaseLabel(data.phase, data.depth);
+
+                if (data.audio) {
+                    lastAudioB64 = data.audio;
+                    playAudio(data.audio);
+                } else {
+                    speakText(data.question);
+                }
+
+                if (data.status === 'completed') setTimeout(showReport, 2500);
+
+            } catch (e) {
+                addMessage('AI', 'Error processing your answer. Please try again.');
+                console.error(e);
+            } finally {
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
             }
         }
 
-        // Socratic depth
-        if (d.socratic_depth) {
-            document.getElementById('socraticSection').innerHTML = `
+        // ── Phase UI ──────────────────────────────────────────────────────────────
+        function updatePhaseIndicator(phase) {
+            const map = { BACKGROUND: 1, PRIMARY_PROJECT_DRILL: 2, SECONDARY_PROJECT_DRILL: 3, DOMAIN_QUESTIONS: 4, BEHAVIORAL: 5, COMPLETED: 6 };
+            const n = map[phase] || 1;
+            document.querySelectorAll('.phase-step').forEach(s => {
+                const p = parseInt(s.dataset.phase);
+                s.classList.remove('active', 'completed');
+                if (p === n) s.classList.add('active');
+                else if (p < n) s.classList.add('completed');
+            });
+        }
+        function updatePhaseLabel(phase, depth) {
+            const names = { BACKGROUND: 'Background', PRIMARY_PROJECT_DRILL: `Primary Project (depth ${depth})`, SECONDARY_PROJECT_DRILL: `Secondary Project (depth ${depth})`, DOMAIN_QUESTIONS: 'Domain Questions', BEHAVIORAL: 'Behavioral', COMPLETED: 'Completed' };
+            document.getElementById('phaseLabel').textContent = names[phase] || phase;
+        }
+
+        // ── Audio ─────────────────────────────────────────────────────────────────
+        function playAudio(b64) {
+            try {
+                const bytes = atob(b64);
+                const arr = new Uint8Array(bytes.length);
+                for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+                const blob = new Blob([arr], { type: 'audio/mpeg' });
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.play().catch(e => { console.warn('Autoplay blocked:', e); speakText(''); });
+            } catch (e) { console.error('Audio playback error:', e); }
+        }
+        function speakText(text) {
+            if ('speechSynthesis' in window && text) {
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = 0.92; u.pitch = 1;
+                window.speechSynthesis.speak(u);
+            }
+        }
+        function replayLast() {
+            if (lastAudioB64) playAudio(lastAudioB64);
+            else {
+                const msgs = document.querySelectorAll('.chat-message.ai .message-content');
+                if (msgs.length) speakText(msgs[msgs.length - 1].textContent);
+            }
+        }
+
+        // ── Report ────────────────────────────────────────────────────────────────
+        async function showReport() {
+            document.getElementById('interviewSection').style.display = 'none';
+            document.getElementById('reportSection').style.display = 'block';
+            try {
+                const res = await fetch(`${API}/get_report/${sessionId}`);
+                if (!res.ok) throw new Error('Failed to get report');
+                const d = await res.json();
+
+                document.getElementById('overallScore').textContent = d.overall_score || '--';
+                document.getElementById('verdictSummary').textContent = d.job_title + ' at ' + d.company;
+                document.getElementById('overallVerdict').textContent = d.overall_verdict || 'Report generated.';
+
+                // Phase scores
+                const phaseScoresDiv = document.getElementById('phaseScores');
+                const nameMap = { BACKGROUND: 'Background', PRIMARY_PROJECT_DRILL: 'Primary Project', SECONDARY_PROJECT_DRILL: 'Secondary Project', DOMAIN_QUESTIONS: 'Domain', BEHAVIORAL: 'Behavioral' };
+                for (const [phase, score] of Object.entries(d.phase_scores || {})) {
+                    if (score) {
+                        const card = document.createElement('div');
+                        card.className = 'phase-score-card';
+                        card.innerHTML = `<div class="phase-score-value">${score}</div><div class="phase-score-name">${nameMap[phase] || phase}</div>`;
+                        phaseScoresDiv.appendChild(card);
+                    }
+                }
+
+                // Socratic depth
+                if (d.socratic_depth) {
+                    document.getElementById('socraticSection').innerHTML = `
                 <div class="report-card">
                     <h3>🔄 Socratic Drill Depth</h3>
                     <p>Primary Project: <span class="depth-badge">${d.socratic_depth.primary}</span></p>
@@ -692,64 +1289,65 @@ async function showReport() {
                     <h3>✅ Domain Accuracy</h3>
                     <p>${d.domain_accuracy} questions answered correctly</p>
                 </div>`;
+                }
+
+                // Phase analysis
+                const analysisDiv = document.getElementById('phaseAnalysis');
+                const phases = [
+                    ['📋 Phase 1 — Background', d.phase_1_summary],
+                    ['🔬 Phase 2 — Primary Project Drill', d.phase_2_analysis + (d.phase_2_socratic_score ? ` (Socratic Score: ${d.phase_2_socratic_score})` : '')],
+                    ['🔬 Phase 3 — Secondary Project Drill', d.phase_3_analysis + (d.phase_3_socratic_score ? ` (Socratic Score: ${d.phase_3_socratic_score})` : '')],
+                    ['📚 Phase 4 — Domain Questions', d.phase_4_analysis],
+                    ['🧠 Phase 5 — Behavioral', d.phase_5_analysis],
+                ];
+                phases.forEach(([title, content]) => {
+                    if (content && content.trim()) {
+                        const card = document.createElement('div');
+                        card.className = 'report-card'; card.style.marginBottom = '12px';
+                        card.innerHTML = `<h3>${title}</h3><p>${content}</p>`;
+                        analysisDiv.appendChild(card);
+                    }
+                });
+
+                // Lists
+                populateList('strengthsList', d.strengths);
+                populateList('gapsList', d.gaps);
+                populateList('improvementTips', d.improvement_tips);
+
+            } catch (e) {
+                document.getElementById('overallVerdict').textContent = 'Error loading report: ' + e.message;
+            }
         }
 
-        // Phase analysis
-        const analysisDiv = document.getElementById('phaseAnalysis');
-        const phases = [
-            ['📋 Phase 1 — Background', d.phase_1_summary],
-            ['🔬 Phase 2 — Primary Project Drill', d.phase_2_analysis + (d.phase_2_socratic_score ? ` (Socratic Score: ${d.phase_2_socratic_score})` : '')],
-            ['🔬 Phase 3 — Secondary Project Drill', d.phase_3_analysis + (d.phase_3_socratic_score ? ` (Socratic Score: ${d.phase_3_socratic_score})` : '')],
-            ['📚 Phase 4 — Domain Questions', d.phase_4_analysis],
-            ['🧠 Phase 5 — Behavioral', d.phase_5_analysis],
-        ];
-        phases.forEach(([title, content]) => {
-            if (content && content.trim()) {
-                const card = document.createElement('div');
-                card.className = 'report-card'; card.style.marginBottom = '12px';
-                card.innerHTML = `<h3>${title}</h3><p>${content}</p>`;
-                analysisDiv.appendChild(card);
+        function populateList(id, items) {
+            const ul = document.getElementById(id);
+            (items || []).forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                ul.appendChild(li);
+            });
+            if (!items || items.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No data available';
+                li.style.color = '#666';
+                ul.appendChild(li);
             }
-        });
+        }
 
-        // Lists
-        populateList('strengthsList', d.strengths);
-        populateList('gapsList', d.gaps);
-        populateList('improvementTips', d.improvement_tips);
-
-    } catch(e) {
-        document.getElementById('overallVerdict').textContent = 'Error loading report: ' + e.message;
-    }
-}
-
-function populateList(id, items) {
-    const ul = document.getElementById(id);
-    (items || []).forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        ul.appendChild(li);
-    });
-    if (!items || items.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'No data available';
-        li.style.color = '#666';
-        ul.appendChild(li);
-    }
-}
-
-// ── Controls ──────────────────────────────────────────────────────────────
-async function resumeInterview() {
-    document.getElementById('breakModal').classList.remove('show');
-    try { await fetch(`${API}/resume_session/${sessionId}`, { method:'POST' }); } catch(e) {}
-}
-function endInterview() {
-    if (confirm('End this interview and see your report?')) showReport();
-}
-function showError(msg) {
-    const el = document.getElementById('errorMessage');
-    el.textContent = msg; el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 6000);
-}
-</script>
+        // ── Controls ──────────────────────────────────────────────────────────────
+        async function resumeInterview() {
+            document.getElementById('breakModal').classList.remove('show');
+            try { await fetch(`${API}/resume_session/${sessionId}`, { method: 'POST' }); } catch (e) { }
+        }
+        function endInterview() {
+            if (confirm('End this interview and see your report?')) showReport();
+        }
+        function showError(msg) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = msg; el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 6000);
+        }
+    </script>
 </body>
+
 </html>

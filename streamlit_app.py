@@ -47,6 +47,29 @@ if page != st.session_state.current_page:
     st.session_state.current_page = page
     st.rerun()
 
+# ── Candidate CRM RAG Sidebar ────────────────────────────────────────────────
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 💬 Candidate RAG Oracle")
+res_to_index = st.session_state.get("resume_text", "")
+if res_to_index.strip():
+    if st.sidebar.button("⚡ Index Current Resume to RAG", use_container_width=True):
+        with st.spinner("Indexing resume sections..."):
+            from utils.rag_manager import index_resume
+            try:
+                blocks = index_resume(res_to_index)
+                st.sidebar.success(f"Indexed {blocks} blocks successfully!")
+            except Exception as e:
+                st.sidebar.error(f"Failed to index: {e}")
+else:
+    st.sidebar.caption("Paste a resume on the Job Search page to enable indexing.")
+
+rag_query = st.sidebar.text_input("Ask about candidate profile / history:")
+if rag_query.strip():
+    from utils.rag_manager import query_candidate_history
+    with st.spinner("Querying profile history..."):
+        ans = query_candidate_history(rag_query)
+        st.sidebar.info(ans)
+
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE 1: Job Search & Apply
 # ══════════════════════════════════════════════════════════════════════════════
@@ -59,7 +82,30 @@ if page == "🔍 Job Search & Apply":
     # )
 
     # ── Shared inputs ─────────────────────────────────────────────────────────
-    resume_text = st.text_area("📄 Paste Your Resume *(mandatory)*", height=180)
+    uploaded_file = st.file_uploader("📂 Or Upload Resume (PDF / DOCX)", type=["pdf", "docx"])
+    if uploaded_file is not None:
+        try:
+            file_name = uploaded_file.name.lower()
+            text = ""
+            if file_name.endswith(".pdf"):
+                import fitz
+                pdf_data = uploaded_file.read()
+                doc = fitz.open(stream=pdf_data, filetype="pdf")
+                for page in doc:
+                    text += page.get_text()
+                doc.close()
+            elif file_name.endswith(".docx"):
+                import docx
+                doc = docx.Document(uploaded_file)
+                text = "\n".join([p.text for p in doc.paragraphs])
+                
+            if text.strip():
+                st.session_state["resume_text"] = text.strip()
+                st.success(f"✅ Extracted resume content from {uploaded_file.name}!")
+        except Exception as e:
+            st.error(f"Error parsing file: {e}")
+
+    resume_text = st.text_area("📄 Paste / Indexed Resume *(mandatory)*", height=180, key="resume_text")
     user_bio = st.text_area(
         "🙋 Short Bio (for outreach tone)",
         value="I'm a passionate AI/ML professional looking for impactful roles.",
@@ -412,6 +458,40 @@ if page == "🔍 Job Search & Apply":
                             st.caption(f"Word export error: {e}")
 
                 st.markdown("---")
+                st.markdown("#### 🚀 Auto-Apply Browser Agent")
+                st.caption("Let the play-by-play autonomous browser agent navigate and auto-fill the application form.")
+                apply_url = jd.get("PositionURI", "")
+                if apply_url:
+                    st.info(f"Target Form URL: {apply_url}")
+                    if st.button("⚡ Open and Auto-Fill Form", key=f"auto_apply_btn_{i}"):
+                        from utils.browser_apply import auto_fill_form
+                        
+                        # Decide target resume file
+                        target_resume_path = ""
+                        if ats_key in st.session_state:
+                            target_resume_path = st.session_state[ats_key]["filepath"]
+                        else:
+                            # Write raw resume to a temporary text file for playwright upload
+                            tmp_f = tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w", encoding="utf-8")
+                            tmp_f.write(res_text)
+                            tmp_f.close()
+                            target_resume_path = tmp_f.name
+                        
+                        with st.spinner("Launching headed browser & filling form..."):
+                            res_apply = auto_fill_form(apply_url, target_resume_path, user_bio)
+                            
+                        if res_apply["success"]:
+                            st.success(res_apply["message"])
+                            if res_apply["fields_filled"]:
+                                st.write("✏️ Filled Fields:")
+                                for f_val in res_apply["fields_filled"]:
+                                    st.markdown(f"- {f_val}")
+                        else:
+                            st.error(res_apply["message"])
+                else:
+                    st.warning("No application link found for this JD to auto-fill.")
+
+                st.markdown("---")
                 st.markdown("#### 📄 Personalized Cover Letter")
                 cover = output.get("cover_letter", "")
                 st.markdown(cover)
@@ -512,6 +592,68 @@ elif page == "📊 Applications Dashboard":
     col2.metric("Avg Match Score", f"{avg_score}/100")
     col3.metric("Unique Employers", unique_agencies)
     col4.metric("Sources Used", len(sources))
+
+    st.markdown("---")
+
+    # ── Autonomous Alert Crawler Panel ────────────────────────────────────────
+    with st.expander("🤖 Autonomous Alert Crawler Daemon", expanded=False):
+        import json
+        st.markdown("Automate daily scanning of job boards using your candidate bio, matching & auto-tailoring applications.")
+        
+        # Crawler status
+        if "crawler_running" not in st.session_state:
+            st.session_state["crawler_running"] = False
+            
+        c_keyword = st.text_input("Active Crawler Keyword", value="software engineer", key="cron_keyword")
+        c_location = st.text_input("Active Crawler Location", value="Remote", key="cron_location")
+        c_min_score = st.slider("Minimum Match Score Percentage", 50, 95, 75, key="cron_min_score")
+        
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("🚀 Start Background Daemon", disabled=st.session_state["crawler_running"], use_container_width=True):
+                from utils.cron_agent import start_background_scheduler
+                resume_txt = st.session_state.get("resume_text", "")
+                bio = st.session_state.get("user_bio", "I'm a passionate AI developer.")
+                if not resume_txt.strip():
+                    st.warning("Please paste a resume on the Job Search page first before starting.")
+                else:
+                    success = start_background_scheduler(
+                        keyword=c_keyword,
+                        location=c_location,
+                        resume_text=resume_txt,
+                        user_bio=bio,
+                        interval_hours=24.0,
+                        min_score=c_min_score
+                    )
+                    if success:
+                        st.session_state["crawler_running"] = True
+                        st.success("Background daemon crawler activated!")
+        with col_btn2:
+            if st.button("🛑 Stop Background Daemon", disabled=not st.session_state["crawler_running"], use_container_width=True):
+                from utils.cron_agent import stop_background_scheduler
+                stop_background_scheduler()
+                st.session_state["crawler_running"] = False
+                st.info("Daemon crawler terminated.")
+                
+        st.caption(f"Status: {'🟢 RUNNING (monitoring job boards daily)' if st.session_state['crawler_running'] else '🔴 IDLE'}")
+        
+        # Display cron alert results
+        from utils.cron_agent import ALERT_OUTPUT_DIR
+        if os.path.exists(ALERT_OUTPUT_DIR):
+            st.markdown("##### 🛎️ Recently Triggered Auto-Matches:")
+            alert_files = [f for f in os.listdir(ALERT_OUTPUT_DIR) if f.endswith(".json")]
+            if alert_files:
+                for file_name in sorted(alert_files, reverse=True)[:5]:
+                    try:
+                        with open(os.path.join(ALERT_OUTPUT_DIR, file_name), "r", encoding="utf-8") as f:
+                            alert = json.load(f)
+                        score_val = alert["score_data"].get("match_score", 0)
+                        st.write(f"- **{alert.get('job_title', 'Unknown')}** at **{alert.get('company', 'Unknown')}**  "
+                                 f"| Match Score: `{score_val}%` | Status: `Auto-Tailored & Logged`")
+                    except Exception:
+                        continue
+            else:
+                st.caption("No autonomous match alerts triggered yet.")
 
     st.markdown("---")
 
@@ -691,7 +833,8 @@ elif page == "🎤 Interview Practice":
             # Build interview URL with prefill data
             import requests as req
 
-            response = req.post("https://job-agent-api-w42b.onrender.com/prefill_session", data={
+            api_base = os.getenv("API_BASE_URL", "http://localhost:8000")
+            response = req.post(f"{api_base}/prefill_session", data={
                 "job_title": interview_job_title,
                 "company": interview_company,
                 "resume_text": interview_resume,

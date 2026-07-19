@@ -43,13 +43,25 @@ def run_with_retry(crew, max_retries=3, wait_seconds=15):
 
 def get_llm(temperature=0.3):
     """
-    Returns Groq LLM. Falls back to OpenRouter if Groq quota is exceeded.
+    Returns OpenRouter LLM. Falls back to Groq if OpenRouter quota is exceeded or not configured.
     """
     import litellm
 
     litellm.set_verbose = False
 
-    # Try Groq first
+    # Try OpenRouter first
+    if OPENROUTER_API_KEY:
+        try:
+            return LLM(
+                model="openrouter/google/gemma-4-26b-a4b-it:free",
+                api_key=OPENROUTER_API_KEY,
+                temperature=temperature,
+                timeout=LLM_TIMEOUT,
+            )
+        except Exception:
+            pass
+
+    # Fallback: Groq
     if GROQ_API_KEY:
         try:
             return LLM(
@@ -61,15 +73,11 @@ def get_llm(temperature=0.3):
         except Exception:
             pass
 
-    # Fallback: OpenRouter (free tier)
-    if OPENROUTER_API_KEY:
-        return LLM(
-            model="openrouter/meta-llama/llama-3.1-70b-instruct:free",
-            api_key=OPENROUTER_API_KEY,
-            temperature=temperature,
-            timeout=LLM_TIMEOUT,
-        )
-
-    raise ValueError(
-        "No valid LLM API key found. Set GROQ_API_KEY or OPENROUTER_API_KEY in .env"
+    # Return dummy LLM to prevent import crashes when keys are missing.
+    # Actual invocation will fail downstream if keys are not supplied.
+    return LLM(
+        model="openrouter/google/gemma-4-26b-a4b-it:free",
+        api_key="DUMMY_KEY_FOR_IMPORT_RESILIENCE",
+        temperature=temperature,
+        timeout=LLM_TIMEOUT
     )
